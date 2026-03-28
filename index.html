@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia Remotion + Claude Code — Crie Videos com Codigo</title>
+  <meta name="description" content="Guia passo a passo para criar videos programaticamente usando Remotion Agent Skills e Claude Code.">
+  <meta property="og:title" content="Guia Remotion + Claude Code">
+  <meta property="og:description" content="Crie videos incriveis usando React + IA. Guia completo passo a passo.">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #1a1a2e;
+      --text-secondary: #555770;
+      --accent: #4f46e5;
+      --accent-light: #e0e7ff;
+      --accent-dark: #3730a3;
+      --border: #e5e7eb;
+      --code-bg: #f3f4f6;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --radius: 12px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hero */
+    .hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.75rem, 5vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Section */
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    a:hover { text-decoration: underline; }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    @media (min-width: 540px) {
+      .card-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-icon.purple { background: #ede9fe; }
+    .card-icon.blue { background: #dbeafe; }
+    .card-icon.green { background: #d1fae5; }
+    .card-icon.orange { background: #ffedd5; }
+
+    .card h3 { margin-bottom: 0.35rem; }
+    .card p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* Steps */
+    .step {
+      position: relative;
+      padding-left: 3.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 42px;
+      bottom: -2rem;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .step:last-child::before { display: none; }
+
+    .step-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+    }
+
+    .step h3 {
+      padding-top: 0.45rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p { font-size: 0.92rem; }
+
+    /* Code */
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    pre .comment { color: #6c7086; }
+    pre .keyword { color: #cba6f7; }
+    pre .string { color: #a6e3a1; }
+    pre .function { color: #89b4fa; }
+    pre .tag { color: #f38ba8; }
+    pre .attr { color: #fab387; }
+    pre .number { color: #fab387; }
+
+    code:not(pre code) {
+      background: var(--code-bg);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent-dark);
+    }
+
+    /* Callout */
+    .callout {
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .callout-icon {
+      flex-shrink: 0;
+      font-size: 1.1rem;
+      margin-top: 1px;
+    }
+
+    .callout.info {
+      background: var(--accent-light);
+      border: 1px solid #c7d2fe;
+      color: var(--accent-dark);
+    }
+
+    .callout.success {
+      background: var(--success-light);
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+
+    .callout.warning {
+      background: var(--warning-light);
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .callout p { color: inherit; margin-bottom: 0; }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: var(--code-bg);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+
+    .checklist li {
+      padding: 0.4rem 0 0.4rem 1.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+    }
+
+    .checklist li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.65rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 2px solid var(--border);
+      background: var(--surface);
+    }
+
+    .checklist li.done::before {
+      background: var(--success);
+      border-color: var(--success);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2.5-2.5a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+    }
+
+    /* Divider */
+    hr {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* File tree */
+    .file-tree {
+      background: var(--code-bg);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .file-tree .folder { color: var(--accent); font-weight: 500; }
+    .file-tree .file { color: var(--text-secondary); }
+    .file-tree .desc { color: #9ca3af; font-family: 'Inter', sans-serif; font-size: 0.78rem; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+    }
+
+    footer a { color: var(--accent); }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    /* Selection */
+    ::selection {
+      background: var(--accent-light);
+      color: var(--accent-dark);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toc-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+    }
+
+    .toc li {
+      counter-increment: toc;
+      margin-bottom: 0.35rem;
+    }
+
+    .toc li a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.15s;
+    }
+
+    .toc li a::before {
+      content: counter(toc, decimal-leading-zero);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 500;
+      min-width: 1.5rem;
+    }
+
+    .toc li a:hover { color: var(--accent); text-decoration: none; }
+
+    /* Copy button */
+    .code-wrapper {
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #a6adc8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255,255,255,0.14);
+      color: #cdd6f4;
+    }
+
+    .copy-btn.copied {
+      color: #a6e3a1;
+      border-color: rgba(166, 227, 161, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .hero { padding: 2rem 1.25rem 1.75rem; }
+      .container { padding: 1.5rem 1.25rem 3rem; }
+      .step { padding-left: 3rem; }
+      pre { font-size: 0.76rem; padding: 0.85rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-badge">GUIA PASSO A PASSO</div>
+    <h1>Crie Videos com Codigo<br>usando <span>Remotion + Claude Code</span></h1>
+    <p>Aprenda a gerar videos profissionais usando React e inteligencia artificial, direto do terminal.</p>
+  </header>
+
+  <!-- Content -->
+  <main class="container">
+
+    <!-- TOC -->
+    <nav class="toc">
+      <div class="toc-title">Neste guia</div>
+      <ol>
+        <li><a href="#o-que-e">O que e Remotion e Claude Code</a></li>
+        <li><a href="#agent-skills">O que sao Agent Skills</a></li>
+        <li><a href="#pre-requisitos">Pre-requisitos</a></li>
+        <li><a href="#passo-a-passo">Setup passo a passo</a></li>
+        <li><a href="#primeiro-video">Seu primeiro video</a></li>
+        <li><a href="#estrutura">Estrutura do projeto</a></li>
+        <li><a href="#renderizar">Renderizar o video</a></li>
+        <li><a href="#exemplos">Exemplos de prompts</a></li>
+        <li><a href="#dicas">Dicas e boas praticas</a></li>
+        <li><a href="#licenca">Licenca e custos</a></li>
+        <li><a href="#recursos">Recursos</a></li>
+      </ol>
+    </nav>
+
+    <!-- O que e -->
+    <section id="o-que-e">
+      <div class="section-label">Contexto</div>
+      <h2>O que e Remotion e Claude Code?</h2>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon purple">R</div>
+          <h3>Remotion</h3>
+          <p>Framework open-source que permite criar videos programaticamente usando React. Cada frame do video e um componente React. O resultado final e um MP4.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon blue">C</div>
+          <h3>Claude Code</h3>
+          <p>Ferramenta CLI da Anthropic que permite escrever e editar codigo usando linguagem natural direto no terminal. Voce descreve, ele implementa.</p>
+        </div>
+      </div>
+
+      <p>Quando voce combina os dois, o fluxo fica assim: voce descreve o video que quer em texto, o Claude escreve os componentes React, e o Remotion renderiza em MP4.</p>
+    </section>
+
+    <hr>
+
+    <!-- Agent Skills -->
+    <section id="agent-skills">
+      <div class="section-label">Conceito chave</div>
+      <h2>O que sao Agent Skills?</h2>
+
+      <p>Agent Skills sao <strong>conjuntos de instrucoes curadas</strong> que ensinam agentes de IA (como Claude Code) a trabalhar corretamente dentro de projetos especificos. No caso do Remotion, os skills ensinam o Claude a:</p>
+
+      <ul class="checklist">
+        <li class="done">Criar componentes React no padrao do Remotion</li>
+        <li class="done">Usar hooks como <code>useCurrentFrame()</code> e <code>useVideoConfig()</code></li>
+        <li class="done">Registrar compositions corretamente</li>
+        <li class="done">Aplicar animacoes frame a frame</li>
+        <li class="done">Seguir boas praticas de performance</li>
+      </ul>
+
+      <div class="callout info">
+        <span class="callout-icon">i</span>
+        <p>Sem os skills, o Claude consegue criar videos com Remotion — mas com eles, o resultado e significativamente melhor porque ele conhece as convencoes e padroes do framework.</p>
+      </div>
+
+      <p>O skill oficial do Remotion ficou no <strong>top do marketplace skills.sh</strong> com mais de 25.000 instalacoes nos primeiros dias de lancamento (janeiro 2026).</p>
+    </section>
+
+    <hr>
+
+    <!-- Pre-requisitos -->
+    <section id="pre-requisitos">
+      <div class="section-label">Antes de comecar</div>
+      <h2>Pre-requisitos</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Ferramenta</th>
+              <th>Versao minima</th>
+              <th>Como instalar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Node.js</strong></td>
+              <td>18+</td>
+              <td><a href="https://nodejs.org" target="_blank">nodejs.org</a></td>
+            </tr>
+            <tr>
+              <td><strong>Claude Code</strong></td>
+              <td>Ultima</td>
+              <td><code>npm install -g @anthropic-ai/claude-code</code></td>
+            </tr>
+            <tr>
+              <td><strong>Conta Anthropic</strong></td>
+              <td>—</td>
+              <td>Assinatura Pro, Max ou Team</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warning">
+        <span class="callout-icon">!</span>
+        <p><strong>Claude Code requer assinatura paga</strong> da Anthropic (Pro $20/mes ou Max $100/mes). O Remotion em si e gratuito para individuos.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Passo a passo -->
+    <section id="passo-a-passo">
+      <div class="section-label">Mao na massa</div>
+      <h2>Setup passo a passo</h2>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Crie o projeto Remotion</h3>
+        <p>Abra o terminal e rode o comando abaixo. Ele cria um projeto completo com tudo configurado:</p>
+        <div class="code-wrapper">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre>npx create-video@latest</pre>
+        </div>
+        <p>Quando perguntar, escolha:</p>
+        <ul class="checklist">
+          <li class="done">Template: <strong>Blank</strong></li>
+          <li class="done">TailwindCSS: <strong>Sim</strong></li>
+          <li class="done">Install Skills: <strong>Sim</strong></li>
+        </ul>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Instale as dependencias</h3>
+        <p>Entre na pasta do projeto e instale:</p>
+        <div class="code-wrapper">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="comment"># Substitua "meu-video" pelo nome que escolheu</span>
+<span class="keyword">cd</span> meu-video
+npm install</pre>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Rode o preview</h3>
+        <p>Isso abre o Remotion Studio no browser — um player interativo onde voce ve o video em tempo real:</p>
+        <div class="code-wrapper">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre>npm run dev</pre>
+        </div>
+        <p>Acesse <code>http://localhost:3000</code> no browser.</p>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3>Abra o Claude Code</h3>
+        <p>Em <strong>outro terminal</strong> (mantenha o preview rodando), abra o Claude Code dentro do projeto:</p>
+        <div class="code-wrapper">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="keyword">cd</span> meu-video
+claude</pre>
+        </div>
+        <p>O Claude ja vai reconhecer o projeto Remotion e os Agent Skills instalados.</p>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step">
+        <div class="step-number">5</div>
+        <h3>Descreva seu video</h3>
+        <p>Agora e so descrever o que voce quer. O Claude vai criar os componentes React, registrar as compositions, e aplicar animacoes. Exemplo:</p>
+        <div class="code-wrapper">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="string">"Crie um video de 15 segundos com fundo branco.
+Titulo 'Remotion e incrivel' aparece com fade-in no centro.
+Apos 3 segundos, o titulo sobe e 3 bullet points
+aparecem um por um de baixo para cima."</span></pre>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="step">
+        <div class="step-number">6</div>
+        <h3>Veja o resultado no preview</h3>
+        <p>Volte ao browser com o Remotion Studio aberto. O video ja vai estar la com hot reload. Use o player para navegar frame a frame e ajustar o que precisar.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Primeiro video -->
+    <section id="primeiro-video">
+      <div class="section-label">Entendendo o codigo</div>
+      <h2>Anatomia de um video Remotion</h2>
+
+      <p>Todo video Remotion e composto por <strong>componentes React</strong> + <strong>metadata</strong>. Aqui esta o minimo necessario:</p>
+
+      <h3>Componente do video</h3>
+      <div class="code-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="comment">// src/MeuVideo.tsx</span>
+<span class="keyword">import</span> { <span class="function">AbsoluteFill</span>, <span class="function">useCurrentFrame</span>, <span class="function">interpolate</span> } <span class="keyword">from</span> <span class="string">"remotion"</span>;
+
+<span class="keyword">export const</span> <span class="function">MeuVideo</span> = () => {
+  <span class="keyword">const</span> frame = <span class="function">useCurrentFrame</span>();
+
+  <span class="comment">// Opacidade vai de 0 a 1 nos primeiros 30 frames</span>
+  <span class="keyword">const</span> opacity = <span class="function">interpolate</span>(frame, [<span class="number">0</span>, <span class="number">30</span>], [<span class="number">0</span>, <span class="number">1</span>]);
+
+  <span class="keyword">return</span> (
+    <span class="tag">&lt;AbsoluteFill</span> <span class="attr">style</span>={{ background: <span class="string">"white"</span> }}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h1</span> <span class="attr">style</span>={{ opacity, textAlign: <span class="string">"center"</span>, marginTop: <span class="string">"40%"</span> }}<span class="tag">&gt;</span>
+        Meu primeiro video!
+      <span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/AbsoluteFill&gt;</span>
+  );
+};</pre>
+      </div>
+
+      <h3>Registrar a Composition</h3>
+      <div class="code-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="comment">// src/Root.tsx</span>
+<span class="keyword">import</span> { <span class="function">Composition</span> } <span class="keyword">from</span> <span class="string">"remotion"</span>;
+<span class="keyword">import</span> { <span class="function">MeuVideo</span> } <span class="keyword">from</span> <span class="string">"./MeuVideo"</span>;
+
+<span class="keyword">export const</span> <span class="function">RemotionRoot</span> = () => {
+  <span class="keyword">return</span> (
+    <span class="tag">&lt;Composition</span>
+      <span class="attr">id</span>=<span class="string">"MeuVideo"</span>
+      <span class="attr">component</span>={<span class="function">MeuVideo</span>}
+      <span class="attr">durationInFrames</span>={<span class="number">150</span>}  <span class="comment">// 5 seg a 30fps</span>
+      <span class="attr">fps</span>={<span class="number">30</span>}
+      <span class="attr">width</span>={<span class="number">1920</span>}
+      <span class="attr">height</span>={<span class="number">1080</span>}
+    <span class="tag">/&gt;</span>
+  );
+};</pre>
+      </div>
+
+      <div class="callout success">
+        <span class="callout-icon">&#10003;</span>
+        <p><strong>Voce nao precisa escrever esse codigo manualmente.</strong> O Claude Code gera tudo isso quando voce descreve o video. Mas entender a estrutura ajuda a pedir ajustes mais precisos.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Estrutura -->
+    <section id="estrutura">
+      <div class="section-label">Organizacao</div>
+      <h2>Estrutura do projeto</h2>
+
+      <div class="file-tree">
+        <span class="folder">meu-video/</span><br>
+        &nbsp;&nbsp;<span class="folder">src/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">Root.tsx</span> <span class="desc">— registro das compositions</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">MeuVideo.tsx</span> <span class="desc">— componente principal</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">scenes/</span> <span class="desc">— cenas individuais</span><br>
+        &nbsp;&nbsp;<span class="folder">public/</span> <span class="desc">— imagens, fontes, audio</span><br>
+        &nbsp;&nbsp;<span class="folder">.claude/</span> <span class="desc">— Agent Skills do Remotion</span><br>
+        &nbsp;&nbsp;<span class="file">CLAUDE.md</span> <span class="desc">— instrucoes para o Claude</span><br>
+        &nbsp;&nbsp;<span class="file">remotion.config.ts</span> <span class="desc">— config do Remotion</span><br>
+        &nbsp;&nbsp;<span class="file">package.json</span>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Renderizar -->
+    <section id="renderizar">
+      <div class="section-label">Exportar</div>
+      <h2>Renderizar o video final</h2>
+
+      <p>Quando estiver satisfeito com o preview, exporte para MP4:</p>
+
+      <div class="code-wrapper">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="comment"># Render basico</span>
+npx remotion render MeuVideo out/video.mp4
+
+<span class="comment"># Com props dinamicas</span>
+npx remotion render <span class="attr">--props</span>=<span class="string">'{"titulo": "Custom"}'</span> MeuVideo
+
+<span class="comment"># Apenas um trecho (frames 0 a 90)</span>
+npx remotion render <span class="attr">--frames</span>=<span class="number">0-90</span> MeuVideo
+
+<span class="comment"># Escalar resolucao (720p para 1080p)</span>
+npx remotion render <span class="attr">--scale</span>=<span class="number">1.5</span> MeuVideo
+
+<span class="comment"># Formato vertical (Reels/Shorts)</span>
+<span class="comment"># Defina width=1080 height=1920 na Composition</span></pre>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">i</span>
+        <p>Para Reels e Shorts, use resolucao <strong>1080x1920</strong> (vertical) com <strong>fps=30</strong>. O Remotion suporta qualquer resolucao e aspect ratio.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Exemplos -->
+    <section id="exemplos">
+      <div class="section-label">Inspiracao</div>
+      <h2>Exemplos de prompts para o Claude</h2>
+
+      <div class="card">
+        <h3>Video explicativo</h3>
+        <p><em>"Crie um video de 30 segundos, 1080p, fundo branco. Cena 1: titulo 'Como funciona o Remotion' com fade-in. Cena 2: 3 topicos aparecem um por um com animacao slide-up. Cena 3: logo centralizado com texto 'Comece agora'. Transicoes suaves entre cenas."</em></p>
+      </div>
+
+      <div class="card">
+        <h3>Contador animado</h3>
+        <p><em>"Crie um video vertical (1080x1920) de 10 segundos mostrando um numero contando de 0 ate 1000 em fonte grande centralizada. Fundo gradiente azul para roxo. Numero em branco, bold."</em></p>
+      </div>
+
+      <div class="card">
+        <h3>Apresentacao de produto</h3>
+        <p><em>"Video de 20 segundos apresentando um app. Cena 1: nome do app com glow effect. Cena 2: 3 features com icones aparecendo em sequencia. Cena 3: CTA 'Baixe agora' com bounce animation. Use TailwindCSS."</em></p>
+      </div>
+
+      <div class="card">
+        <h3>Data visualization</h3>
+        <p><em>"Crie um video mostrando um grafico de barras que cresce animado ao longo de 15 segundos. 5 barras com labels: Jan, Fev, Mar, Abr, Mai. Valores: 120, 340, 280, 450, 390. Cores pasteis diferentes para cada barra."</em></p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Dicas -->
+    <section id="dicas">
+      <div class="section-label">Pro tips</div>
+      <h2>Dicas e boas praticas</h2>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon green">1</div>
+          <h3>Itere no preview</h3>
+          <p>Nao tente acertar tudo no primeiro prompt. Gere, veja o preview, e peca ajustes ao Claude.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon orange">2</div>
+          <h3>Use interpolate()</h3>
+          <p>A funcao <code>interpolate()</code> do Remotion e sua melhor amiga para animacoes suaves baseadas em frame.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon purple">3</div>
+          <h3>Cenas separadas</h3>
+          <p>Peca ao Claude para criar cada cena como componente separado. Facilita edicao e reuso.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon blue">4</div>
+          <h3>Tailwind ajuda muito</h3>
+          <p>Ative TailwindCSS no setup. O Claude gera estilos mais precisos e consistentes com utility classes.</p>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <span class="callout-icon">&#10003;</span>
+        <p><strong>Dica de ouro:</strong> Seu video e codigo. Isso significa que voce pode versionar com Git, gerar variacoes automaticas, e escalar producao de conteudo com templates reutilizaveis.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Licenca -->
+    <section id="licenca">
+      <div class="section-label">Custos</div>
+      <h2>Licenca e valores</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Quem</th>
+              <th>Remotion</th>
+              <th>Claude Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Individuo</td>
+              <td><strong>Gratis</strong></td>
+              <td>A partir de $20/mes</td>
+            </tr>
+            <tr>
+              <td>Empresa ate 3 pessoas</td>
+              <td><strong>Gratis</strong></td>
+              <td>A partir de $20/mes</td>
+            </tr>
+            <tr>
+              <td>Empresa maior</td>
+              <td>$25 ou $100/mes</td>
+              <td>A partir de $20/mes</td>
+            </tr>
+            <tr>
+              <td>Non-profit</td>
+              <td><strong>Gratis</strong></td>
+              <td>A partir de $20/mes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Recursos -->
+    <section id="recursos">
+      <div class="section-label">Links uteis</div>
+      <h2>Recursos</h2>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3>Documentacao oficial</h3>
+          <p><a href="https://remotion.dev/docs" target="_blank">remotion.dev/docs</a></p>
+        </div>
+        <div class="card">
+          <h3>Claude Code + Remotion</h3>
+          <p><a href="https://remotion.dev/docs/ai/claude-code" target="_blank">remotion.dev/docs/ai/claude-code</a></p>
+        </div>
+        <div class="card">
+          <h3>Agent Skills</h3>
+          <p><a href="https://remotion.dev/docs/ai/skills" target="_blank">remotion.dev/docs/ai/skills</a></p>
+        </div>
+        <div class="card">
+          <h3>GitHub Remotion</h3>
+          <p><a href="https://github.com/remotion-dev/remotion" target="_blank">github.com/remotion-dev/remotion</a></p>
+        </div>
+        <div class="card">
+          <h3>Template Kickstart</h3>
+          <p><a href="https://github.com/jhartquist/claude-remotion-kickstart" target="_blank">claude-remotion-kickstart</a></p>
+        </div>
+        <div class="card">
+          <h3>Skill com TTS</h3>
+          <p><a href="https://github.com/wshuyi/remotion-video-skill" target="_blank">remotion-video-skill</a></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Feito com Remotion + Claude Code &mdash;
+    <a href="https://remotion.dev" target="_blank">remotion.dev</a>
+  </footer>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.nextElementSibling;
+      const text = pre.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copiar';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
